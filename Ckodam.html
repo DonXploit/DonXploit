@@ -1,0 +1,399 @@
+<html lang="id">
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Cek Khodam By Doni</title> 
+  <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #6a11cb, #001231);
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: linear-gradient(45deg, blue,#651a1a);
+            padding: 40px;
+            color: blue;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .h1 {
+          color: blue;
+          text-shadow: 1px 1px 0 black, 2px 2px 0 #004094, 3px 3px 0 #003072;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, blue,#651a1a);
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background: linear-gradient(45deg, blue,#760505);
+        }
+        .result-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #bfbfff,#0a0576);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: none;
+            z-index: 1000;
+        }
+        .result-popup p {
+            font-size: 20px;
+            margin: 0 0 20px;
+        }
+        .close-btn {
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .close-btn:hover {
+            background-color: #c33c29;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 500;
+        }
+        .welcome-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #9999ff,#24245b);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: none;
+            z-index: 1000;
+        }
+        .welcome-popup p {
+            font-size: 20px;
+            margin: 0 0 20px;
+        }
+        .close-welcome-btn {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, blue,#651a1a);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .close-welcome-btn:hover {
+            background: linear-gradient(45deg, #00004e,#651a1a);
+        }
+.floating-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #00bfff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .floating-icon img {
+            width: 35px;
+            height: 35px;
+        }
+        .chat-container {
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            transform: scale(0);
+            z-index: 999;
+        }
+        .chat-container.open {
+            display: flex;
+            transform: scale(1);
+        }
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #00bfff;
+            padding: 10px;
+            color: #fff;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            display: flex;
+            align-items: flex-start;
+        }
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+        .chat-message .message-content {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .chat-message.user .message-content {
+            background-color: #00bfff;
+            color: #fff;
+        }
+        .chat-message.bot .message-content {
+            background-color: #006400;
+            color: #fff;
+        }
+        .chat-message img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 10px;
+        }
+        .chat-input-container {
+            background-color: #fff;
+            border-top: 1px solid #eee;
+            padding: 10px;
+        }
+        .chat-input {
+            display: flex;
+            align-items: center;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            margin-right: 10px;
+        }
+        .chat-input button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            outline: none;
+        }
+        #send-button {
+            background-color: #00bfff;
+            color: #fff;
+        }
+        .info-text {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+        .recommended-prompts {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .prompt {
+            background-color: #00bfff;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        .prompt:hover {
+            background-color: #008fbf;
+        }
+    </style> 
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelector(".welcome-popup").style.display = "block";
+        document.querySelector(".overlay").style.display = "block";
+    });
+
+    function closeWelcomePopup() {
+        document.querySelector(".welcome-popup").style.display = "none";
+        document.querySelector(".overlay").style.display = "none";
+    }
+
+    function toggleChat() {
+        const chatContainer = document.getElementById('chat-container');
+        chatContainer.classList.toggle('open');
+    }
+
+    function insertPrompt(promptText) {
+        const userInput = document.getElementById('user-input');
+        userInput.value = promptText;
+        userInput.focus();
+    }
+
+    function addMessage(message, sender) {
+        const chatMessages = document.getElementById('chat-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message ' + sender;
+
+        const img = document.createElement('img');
+        img.src = sender === 'bot' ? 'https://telegra.ph/file/0d6e41883c3924c502e9d.jpg' : 'https://telegra.ph/file/6b59b7652808c71f91ef8.png';
+        img.alt = sender;
+
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        messageContent.textContent = message;
+
+        messageDiv.appendChild(img);
+        messageDiv.appendChild(messageContent);
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function sendMessage() {
+        const userInput = document.getElementById('user-input');
+        const message = userInput.value.trim();
+        if (message === '') return;
+
+        addMessage(message, 'user');
+        userInput.value = '';
+
+        fetch(`https://aemt.me/v2/gpt4?text=${encodeURIComponent(message)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    addMessage(data.result, 'bot');
+                } else {
+                    addMessage('Error: Tidak bisa mendapatkan respons dari AI.', 'bot');
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching AI response:', error);
+                addMessage('Error: Tidak bisa terhubung ke server.', 'bot');
+            });
+    }
+
+    function hashString(str) {
+        let hash = 0, i, chr;
+        for (i = 0; i < str.length; i++) {
+            chr = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + chr;
+            hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
+    }
+
+    function showKhodam() {
+        const nameInput = document.querySelector('input[type="text"]').value.trim();
+        if (nameInput === '') return;
+        
+        const khodams = ["asep kopling", "naga", "macan putih", "nyiroro kidul", "harimau", "Kadal", "Cicak api", "Buaya", "sigit rendang", "kosong", "ikan louhan", "kodok", "kera sakti", "biawak", "merpati", "rawa rontek", "tirex", "tikus sawah", "anjing botak"];
+        const hashValue = hashString(nameInput);
+        const khodamIndex = Math.abs(hashValue) % khodams.length;
+        const randomKhodam = khodams[khodamIndex];
+        
+        document.getElementById("khodamResult").innerText = "Khodam Anda adalah: " + randomKhodam;
+        document.querySelector(".result-popup").style.display = "block";
+        document.querySelector(".overlay").style.display = "block";
+    }
+
+    function closePopup() {
+        document.querySelector(".result-popup").style.display = "none";
+        document.querySelector(".overlay").style.display = "none";
+    }
+</script> 
+ </head> 
+ <body> 
+  <div class="container"> 
+   <h1>Cek Khodam Anda</h1> 
+   <form onsubmit="event.preventDefault(); showKhodam();"> 
+    <input type="text" placeholder="Masukkan nama Anda" required> 
+    <br> 
+    <button type="submit">Cek Khodam</button> 
+   </form> 
+  </div> 
+  <div class="overlay" style="display: block;"></div> 
+  <div class="result-popup"> 
+   <p id="khodamResult"></p> 
+   <button class="close-btn" onclick="closePopup()">Tutup</button> 
+  </div> 
+  <div class="floating-icon" onclick="toggleChat()"> 
+   <img src="https://telegra.ph/file/a2cac9b68ec79f3e13192.jpg" alt="Chat Icon"> 
+  </div> 
+  <div class="chat-container" id="chat-container"> 
+   <div class="chat-header">
+     DhikzStore Ai Gpt 
+   </div> 
+   <div class="chat-messages" id="chat-messages"></div> 
+   <div class="chat-input-container"> 
+    <div class="recommended-prompts" id="recommended-prompts"> 
+     <span class="prompt" onclick="insertPrompt('Hai, bagaimana kabarmu hari ini?')">Hai, bagaimana kabarmu hari ini?</span> 
+    </div> 
+    <div class="chat-input"> 
+     <input type="text" id="user-input" placeholder="Ketik pesan Anda di sini..."> 
+     <button id="send-button" onclick="sendMessage()">¤</button> 
+    </div> 
+    <div class="info-text">
+     © credit dhikzstore.
+    </div> 
+   </div> 
+  </div> 
+  <div class="welcome-popup" style="display: block;"> 
+   <p>Selamat datang di situs dhikzstore, ada yang bisa kami bantu!</p> 
+   <button class="close-welcome-btn" onclick="closeWelcomePopup()">Tutup</button> 
+  </div> 
+ </body>
+</html>
